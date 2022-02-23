@@ -5,10 +5,12 @@ from graphene.types.schema import Schema
 
 
 def default_format_error(error):
-    from graphql.error import format_error as format_graphql_error
-
     if isinstance(error, GraphQLError):
-        return error.formatted if format_graphql_error else format_graphql_error(error)
+        try:
+            from graphql.error import format_error as format_graphql_error
+            return format_graphql_error(error)
+        except ImportError:
+            return error.formatted
     return {"message": str(error)}
 
 
